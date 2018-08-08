@@ -220,6 +220,7 @@ parameters:
     type: string
     description: Number of servie instance. Integer
 
+### Start Resource ###
 resources:
   template_NetworkIpam_1:
     type: OS::ContrailV2::NetworkIpam
@@ -236,6 +237,7 @@ resources:
     properties:
       name: { get_param: right_network }
 
+### Virtual Network management-left-right with the above IPAM ###
   template_VirtualNetwork_1:
     type: OS::ContrailV2::VirtualNetwork
     depends_on: [ template_NetworkIpam_1 ]
@@ -295,6 +297,7 @@ resources:
             }]
          }]
 
+### Service template v2 ###
   template_ServiceTemplate:
     type: OS::ContrailV2::ServiceTemplate
     properties:
@@ -331,6 +334,7 @@ resources:
         }
       domain: { get_param: domain }
 
+### Create service instance with above template ###
   template_ServiceInstance:
     type: OS::ContrailV2::ServiceInstance
     depends_on: [ template_ServiceTemplate ]
@@ -385,6 +389,7 @@ resources:
         }
       service_template_refs: [{ get_resource: template_ServiceTemplate }]
 
+### Create "AutoScalingGroup". Desired_capacity = number of instance ###
   instance_group:
     type: OS::Heat::AutoScalingGroup
     properties:
@@ -408,7 +413,8 @@ resources:
           service_interface_type_2: 'left'
           service_interface_type_3: 'right'
           port_tuple_name: port_tuple_name
-
+### Create Service Chaining Policy ###
+### left -> right, with service = above service_instance ###
   service_chaining_policy:
     type: OS::ContrailV2::NetworkPolicy
     depends_on: [template_VirtualNetwork_2, template_VirtualNetwork_3]
@@ -434,7 +440,7 @@ resources:
                         network_policy_entries_policy_rule_action_list_apply_service: [{ get_param: service_instance_fqdn }]
                         }
                 }]}
-
+### Create allow_all policy for management network ###
   allow_all_policy:
     type: OS::Contrail::NetworkPolicy
     depends_on: template_VirtualNetwork_1
@@ -452,7 +458,7 @@ resources:
                 "src_addresses": [{ "virtual_network": 'any'}] 
               }
         ]  
-
+### Attach allow_all to management network ### 
   policy_attach_mgnt_network:
     type: OS::Contrail::AttachPolicy
     depends_on: allow_all_policy
@@ -460,7 +466,7 @@ resources:
       network: { get_param: management_network_fqdn }
       policy: { get_param: allow_all_policy_name_fqdn }
 
-
+### Attach service_chaining_policy to left/right network ###
   policy_attach_right_network:
     type: OS::Contrail::AttachPolicy
     depends_on: service_chaining_policy
