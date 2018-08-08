@@ -204,17 +204,21 @@ parameters:
     type: string
     description: FQDN of poliy
 
+  ## Policies name ##
   allow_all_policy_name:
     type: string
     description: Allow All name
   allow_all_policy_name_fqdn:
     type: string
     description: FQDN of policy default-domain:admin:allow-all
-
-
   security_group_fqdn:
     type: string
     description: Security Group FQDN
+ 
+  ## Number of servie instance ##
+  service_instance_number:
+    type: string
+    description: Number of servie instance. Integer
 
 resources:
   template_NetworkIpam_1:
@@ -385,7 +389,7 @@ resources:
     type: OS::Heat::AutoScalingGroup
     properties:
       cooldown: 60
-      desired_capacity: 1
+      desired_capacity:  { get_param: service_instance_number }
       max_size: 5
       min_size: 1
       resource:
