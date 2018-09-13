@@ -90,21 +90,6 @@ parameters:
     description: FQDN in format default-domain:admin:name
 
 
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_2:
-    type: string
-    description: ip_prefix for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_2:
-    type: number
-    description: ip_prefix_len for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_3:
-    type: string
-    description: ip_prefix for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_3:
-    type: number
-    description: ip_prefix_len for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_address_mode_3:
-    type: string
-    description: address_mode for the ServiceInstance
   network_ipam_refs_data_ipam_subnets_subnet_ip_prefix_1:
     type: string
     description: subnet prefix for mgmt network
@@ -219,6 +204,20 @@ parameters:
   service_instance_number:
     type: string
     description: Number of servie instance. Integer
+
+  ## Ubuntu ##
+  ubuntu_right_name: 
+    type: string
+    description: Ubuntu_Right name
+  ubuntu_left_name: 
+    type: string
+    description: Ubuntu_Left name
+  ubuntu_image:
+    type: string
+    description: ubuntu_image_name as seen in Glance
+  ubuntu_flavor:
+    type: string
+    description: ubuntu_flavor as seen in Openstack
 
 ### Start Resource ###
 resources:
@@ -354,36 +353,13 @@ resources:
               service_instance_properties_interface_list_virtual_network:
                 {
                    list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ]
-                },
-              service_instance_properties_interface_list_allowed_address_pairs:
-                {
-                  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair:
-                    [{
-                      service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip:
-                        {
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_2 },
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_2 },
-                        }
-                    }],
-                },
+                }
               },
               {
               service_instance_properties_interface_list_virtual_network:
                 {
                    list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ]
-                },
-              service_instance_properties_interface_list_allowed_address_pairs:
-                {
-                  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair:
-                    [{
-                      service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip:
-                        {
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_3 },
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_3 },
-                        },
-                      service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_address_mode: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_address_mode_3 },
-                    }],
-                },
+                }
               }
             ],
         }
@@ -480,3 +456,56 @@ resources:
     properties:
       network: { get_param: left_network_fqdn }
       policy: { get_param: policy_fqdn }
+
+### Ubuntu ###
+  Ubuntu_Left_Ip:
+    type: OS::ContrailV2::InstanceIp
+    properties:
+      name: Ubuntu_Left_Ip
+      config_root: "config-root"
+      virtual_machine_interface_refs: [{ get_resource: Ubuntu_Left_VM_Interface }]
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ] }]
+
+
+  Ubuntu_Left_VM_Interface:
+    type: OS::ContrailV2::VirtualMachineInterface
+    properties:
+      name: Ubuntu_Left_Interface
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ] }]
+  
+  Ubuntu_Left_VM:
+    type: OS::Nova::Server
+    depends_on: [ Ubuntu_Left_Ip ]
+    properties:
+      name: { get_param: ubuntu_left_name }
+      image: { get_param: ubuntu_image }
+      flavor: { get_param: ubuntu_flavor }
+      networks:
+        - port: { get_resource: Ubuntu_Left_VM_Interface }
+
+  Ubuntu_Right_Ip:
+    type: OS::ContrailV2::InstanceIp
+    properties:
+      name: Ubuntu_Right_Ip
+      config_root: "config-root"
+      virtual_machine_interface_refs: [{ get_resource: Ubuntu_Right_VM_Interface }]
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ] }]
+
+
+  Ubuntu_Right_VM_Interface:
+    type: OS::ContrailV2::VirtualMachineInterface
+    properties:
+      name: Ubuntu_Right_Interface
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ] }]
+  
+  Ubuntu_Right_VM:
+    type: OS::Nova::Server
+    depends_on: [ Ubuntu_Right_Ip ]
+    properties:
+      name: { get_param: ubuntu_right_name }
+      image: { get_param: ubuntu_image }
+      flavor: { get_param: ubuntu_flavor }
+      networks:
+        - port: { get_resource: Ubuntu_Right_VM_Interface }
+  
+
