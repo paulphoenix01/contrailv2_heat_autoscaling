@@ -1,0 +1,152 @@
+Starting httpd...
+{u'description': u'NetworkDevice st-qq-dhjgxvkaokp2-4gdllfbfxeqe-instance-2qdmr77dvs3s: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-qq-dhjgxvkaokp2-4gdllfbfxeqe-instance-2qdmr77dvs3s',
+ u'entityType': u'network_device',
+ u'metaData': {},
+ u'state': u'disabled',
+ u'timestamp': 1536822926000}
+----------------------------------------
+Exception happened during processing of request from ('192.168.250.3', 46250)
+----------------------------------------
+{u'description': u'Posting test json to validate notification endpoint',
+ u'entityDetails': {},
+ u'entityId': u'',
+ u'entityType': u'',
+ u'metaData': {},
+ u'state': u'',
+ u'timestamp': 1536863435000}
+----------------------------------------
+Exception happened during processing of request from ('192.168.250.3', 60202)
+----------------------------------------
+{u'description': u'NetworkDevice st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 0,
+                                           u'status': u'inactive'}}},
+ u'state': u'inactive',
+ u'timestamp': 1536864254000}
+>>> Alert inactive! - Instance st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn - Current_Session is: 0
+Alarm is processed .. Nothing to do
+--- Current Firewall Instances: 1 ---
+
+{u'description': u'NetworkDevice st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 400,
+                                           u'status': u'active'}}},
+ u'state': u'active',
+ u'timestamp': 1536864435000}
+>>> Alert active! - Instance st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn - Current_Session is: 400
+Scaling out from 1->2 firewall service instance..
+	Updated env file -> number of instance: 2
+	Updating heatscript to change number of service instance
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| id                                   | stack_name | stack_status       | creation_time        | updated_time         | project                          |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| 9a89477a-0157-42a6-8487-8d62257d1c1c | stack1     | UPDATE_IN_PROGRESS | 2018-09-13T16:42:12Z | 2018-09-13T18:47:18Z | d3ce258cf7cd43c5b4598b8d993326fb |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+	... Done!
+
+--- Current Firewall Instances: 2 ---
+
+{u'description': u'NetworkDevice st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 0,
+                                           u'status': u'inactive'}}},
+ u'state': u'inactive',
+ u'timestamp': 1536864495000}
+>>> Alert inactive! - Instance st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn - Current_Session is: 0
+Scaling in from 2->1 firewall service instance..
+	 Waiting 3 minute for things to settle down ... 
+	Updated env file -> number of instance: 1
+	Updating heatscript to change number of service instance
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| id                                   | stack_name | stack_status       | creation_time        | updated_time         | project                          |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| 9a89477a-0157-42a6-8487-8d62257d1c1c | stack1     | UPDATE_IN_PROGRESS | 2018-09-13T16:42:12Z | 2018-09-13T18:51:17Z | d3ce258cf7cd43c5b4598b8d993326fb |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+	... Done!
+
+--- Current Firewall Instances: 1 ---
+
+{u'description': u'NetworkDevice st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 0,
+                                           u'status': u'inactive'}}},
+ u'state': u'inactive',
+ u'timestamp': 1536864677000}
+----------------------------------------
+Exception happened during processing of request from ('192.168.250.3', 34682)
+----------------------------------------
+{u'description': u'NetworkDevice st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-4idb2ajg3km4-s6slgxn6yuda-instance-zh43u56co3vn',
+ u'entityType': u'network_device',
+ u'metaData': {},
+ u'state': u'disabled',
+ u'timestamp': 1536864691000}
+----------------------------------------
+Exception happened during processing of request from ('192.168.250.3', 34730)
+----------------------------------------
+{u'description': u'NetworkDevice st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 384,
+                                           u'status': u'active'}}},
+ u'state': u'active',
+ u'timestamp': 1536864737000}
+>>> Alert active! - Instance st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6 - Current_Session is: 384
+Scaling out from 1->2 firewall service instance..
+	Updated env file -> number of instance: 2
+	Updating heatscript to change number of service instance
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| id                                   | stack_name | stack_status       | creation_time        | updated_time         | project                          |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| 9a89477a-0157-42a6-8487-8d62257d1c1c | stack1     | UPDATE_IN_PROGRESS | 2018-09-13T16:42:12Z | 2018-09-13T18:52:19Z | d3ce258cf7cd43c5b4598b8d993326fb |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+	... Done!
+
+--- Current Firewall Instances: 2 ---
+
+{u'description': u'NetworkDevice st-yo-zdjeuwlkgvh5-63f7zyl6frnw-instance-eqfwy3l7to7m: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-zdjeuwlkgvh5-63f7zyl6frnw-instance-eqfwy3l7to7m',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 0,
+                                           u'status': u'inactive'}}},
+ u'state': u'inactive',
+ u'timestamp': 1536865009000}
+>>> Alert inactive! - Instance st-yo-zdjeuwlkgvh5-63f7zyl6frnw-instance-eqfwy3l7to7m - Current_Session is: 0
+Alarm is processed .. Nothing to do
+--- Current Firewall Instances: 2 ---
+
+{u'description': u'NetworkDevice st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6: average snmp.spu_monitoring.jnxJsSPUMonitoringCurrentFlowSession above 150',
+ u'entityDetails': {},
+ u'entityId': u'st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6',
+ u'entityType': u'network_device',
+ u'metaData': {u'interfaces': {u'single': {u'sampleValue': 0,
+                                           u'status': u'inactive'}}},
+ u'state': u'inactive',
+ u'timestamp': 1536868155000}
+>>> Alert inactive! - Instance st-yo-ubfw2jfp27ns-2o6cmo227pl4-instance-czum3xhnwvr6 - Current_Session is: 0
+Scaling in from 2->1 firewall service instance..
+	 Waiting 3 minute for things to settle down ... 
+	Updated env file -> number of instance: 1
+	Updating heatscript to change number of service instance
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| id                                   | stack_name | stack_status       | creation_time        | updated_time         | project                          |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+| 9a89477a-0157-42a6-8487-8d62257d1c1c | stack1     | UPDATE_IN_PROGRESS | 2018-09-13T16:42:12Z | 2018-09-13T19:52:17Z | d3ce258cf7cd43c5b4598b8d993326fb |
++--------------------------------------+------------+--------------------+----------------------+----------------------+----------------------------------+
+	... Done!
+
+--- Current Firewall Instances: 1 ---
+

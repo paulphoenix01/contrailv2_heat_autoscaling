@@ -1,0 +1,48 @@
+### ALARM TRIGGERED ###
+192.168.250.3 - - [13/Aug/2018 19:39:52] "POST / HTTP/1.1" 200 -
+{u'apiVersion': u'v1',
+ u'kind': u'Alarm',
+ u'spec': {u'aggregationFunction': u'average',
+           u'comparisonFunction': u'above',
+           u'eventRuleId': u'ST-ZG-RLAIZX5WP7F2-UEHHIAOBCTQ7-INSTANCE-C55HWJUMCQQT_ALARM',
+           u'intervalCount': 1,
+           u'intervalDuration': 30,
+           u'intervalsWithException': 1,
+           u'metricType': u'jnxJsSPUMonitoringCurrentFlowSession',
+           u'mode': u'alert',
+           u'module': u'alarms',
+           u'name': u'st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt_alarm',
+           u'severity': u'warning',
+           u'threshold': 200},
+ u'status': {u'description': u"NetworkDevice st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt: average jnxJsSPUMonitoringCurrentFlowSession above 200 {u'NetworkDeviceId': u'st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt', u'single': {u'sample_value': 398, u'status': u'active'}}",
+             u'entityDetails': {},
+             u'entityId': u'st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt',
+             u'entityType': u'network_device',
+             u'metaData': {},
+             u'state': u'active',
+             u'timestamp': 1534203592000}}
+
+
+### INACTIVE ###
+192.168.250.3 - - [13/Aug/2018 19:40:53] "POST / HTTP/1.1" 200 -
+{u'apiVersion': u'v1',
+ u'kind': u'Alarm',
+ u'spec': {u'aggregationFunction': u'average',
+           u'comparisonFunction': u'above',
+           u'eventRuleId': u'ST-ZG-RLAIZX5WP7F2-UEHHIAOBCTQ7-INSTANCE-C55HWJUMCQQT_ALARM',
+           u'intervalCount': 1,
+           u'intervalDuration': 30,
+           u'intervalsWithException': 1,
+           u'metricType': u'jnxJsSPUMonitoringCurrentFlowSession',
+           u'mode': u'alert',
+           u'module': u'alarms',
+           u'name': u'st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt_alarm',
+           u'severity': u'warning',
+           u'threshold': 200},
+ u'status': {u'description': u"NetworkDevice st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt: average jnxJsSPUMonitoringCurrentFlowSession above 200 {u'NetworkDeviceId': u'st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt', u'single': {u'sample_value': 0, u'status': u'inactive'}}",
+             u'entityDetails': {},
+             u'entityId': u'st-zg-rlaizx5wp7f2-uehhiaobctq7-instance-c55hwjumcqqt',
+             u'entityType': u'network_device',
+             u'metaData': {},
+             u'state': u'inactive',
+             u'timestamp': 1534203653000}}

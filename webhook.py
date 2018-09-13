@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python -u
+
 """
 Very simple HTTP server in python.
 
@@ -13,14 +14,11 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
 from pprint import pprint
 from sys import argv
-import json, os, sys, time
+import json, os, sys, time,yaml
 ###
 
-#Change working directory
-#os.chdir('..')
-#base_path = os.getcwd()
-#update_heat_path = base_path + '/heat-client/update_service_instance.py'
-cpu_threshold = 60
+
+alarm_threshold = 150
 
 
 #Basic HTTP Request Handler
@@ -42,33 +40,61 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         post_data = self.rfile.read(int(self.headers['Content-Length']) ) 
 	data = json.loads(post_data)
-	pprint(data)
-	        
+	pprint(data['status'])
+	#pprint(data)
+	self.wfile.write("Alarmed Received")        
 	handle_alarm(data)
 
 
-current_max_instance = 2
+alarmed_instance = ''
 
+def get_current_number_instance():
+	with open("service_instance_scaling.env") as f:
+		for line in f:
+			if "service_instance_number" in line:
+				line = (line.rstrip()).split(' ')
+				number = line[-1]
+				return int(number)
+			
 def handle_alarm(data):
-	#pprint(data)
-	cpu_value = data['status']['metaData']['Sample_Value']
-	alert = data['status']['description']
-	instance_name = alert.split(" ")[1]
-	
-	#print "Alert: %s \nCPU Value: %s \tInstance name: %s" %(alert,cpu_value,instance_name)
-	print "Alert: %s" %(alert)
-	#Scale Out 2->3
-	if int(cpu_value) >= cpu_threshold and current_max_instance == 2:
-		print "Scaling out from 2->3 firewall service instance.."
-		change_max_instance(3)
+        alarm = data['status']
+        alarm_network_device_id = alarm['entityId']
+        alarm_state = alarm['state']
+	alarm_desc = alarm['description']
+	alarm_value = alarm['metaData']['interfaces']['single']['sampleValue']
 
-	elif int(cpu_value) < cpu_threshold and current_max_instance == 3:
-		print "Scaling in from 3->2 firewall service instance.."
-		change_max_instance(2)
+        if alarm_state == '':
+                print "Test Alarm. ACK TEST"
+                return True
+
+	if alarm_state == 'disabled':
+		print "Alarm is in process .. Nothing to do"  	
+		return True
+
+
+	print ">>> Alert %s! - Instance %s - Current_Session is: %s" %(alarm_state, alarm_network_device_id, alarm_value)
+	
+	global alarmed_instance
+	#Scale Out
+	number_of_instance = get_current_number_instance()
+	if int(alarm_value) >= alarm_threshold and alarm_state == 'active' and number_of_instance == 1:
+		print "Scaling out from 1->2 firewall service instance.."
+		alarmed_instance = alarm_network_device_id
+		update_heat(2)
+
+	#Scale in
+	elif int(alarm_value) < alarm_threshold and alarm_state == 'inactive' and number_of_instance == 2 and alarmed_instance == alarm_network_device_id:
+		print "Scaling in from 2->1 firewall service instance.."
+		print "\t Waiting 3 minute for things to settle down ... "
+		alarmed_instance = ''
+		time.sleep(180)
+		update_heat(1)
+
 	else:
 		print "Alarm is processed .. Nothing to do"
 
-	print "--- Current Firewall Instances: %s ---\n" % (str(current_max_instance))
+	number_of_instance = get_current_number_instance()
+	print "--- Current Firewall Instances: %s ---\n" % (str(number_of_instance))
 
 
 ### Update service_instance_number in ENV file ###
@@ -78,11 +104,11 @@ def update_env_file(number):
 	with open("service_instance_scaling.env", 'w') as f:
 		for line in lines:
 			if 'service_instance_number' in line:
-				line = "  service_instance_number : %s\n\n" %(str(number))
+				line = "  service_instance_number : %s\n" %(str(number))
 			f.write(line)
 	print "\tUpdated env file -> number of instance: %s" %(number)
 	
-def change_max_instance(number):
+def update_heat(number):
 	global current_max_instance 
 	current_max_instance = int(number)
 	update_env_file(int(number))
@@ -90,33 +116,28 @@ def change_max_instance(number):
 	#Cmd to run Heatscript for updating service instance
 	cmd = './update_heat.sh'
 
-	if int(number) == 3:
-		print "\tUpdating heatscript to scale out ..."
-		os.system(cmd)
+	print "\tUpdating heatscript to change number of service instance"
+	os.system(cmd)
 
-		time.sleep(5)
-		print "\t... Done!\n"
+	time.sleep(15)
+	print "\t... Done!\n"
 
-	elif int(number) == 2:
-		print "\tUpdating heatscript to scale in ..."
-                os.system(cmd)
-		
-		time.sleep(5)
-		print "\t... Done!\n"
-		
 		
 
 ## Run HTTP server
 def run(server_class=HTTPServer, handler_class=S, port=80):
     server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
-    print 'Starting httpd...'
-    httpd.serve_forever()
+    try:
+    	httpd = server_class(server_address, handler_class)
+    	print 'Starting httpd...'
+    	httpd.serve_forever()
+    except:
+	print "Some exception .. Ignoring"
+	pass
 
 if __name__ == "__main__":
-     update_env_file(2)
-
-#    if len(argv) == 2:
-#        run(port=int(argv[1]))
-#    else:
-#        run()
+    ### Run on default port 9999 ###
+    if len(argv) == 2:
+        run(port=int(argv[1]))
+    else:
+        run(port=int(9999))
