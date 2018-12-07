@@ -31,10 +31,11 @@ Wait 30seconds . . . "heat stack-list" should shows complete
 +--------------------------------------+------------+----------------------------------+-----------------+----------------------+--------------+
 ```
 
-To scale-out/in you can edit ‘desired_capacity’ and run heat-update
-https://github.com/paulphoenix01/contrailv2_heat_autoscaling/blob/master/service_instance_scaling.yaml#L393
+To scale-out/in you can edit 'service_instance_number' and run heat-update
 ```
 #vim service_instance_scaling.yaml
+## Edit service_instance_number
+
 heat stack-update stack1 --template-file service_instance_scaling.yaml --environment service_instance_scaling.env
 ```
 
