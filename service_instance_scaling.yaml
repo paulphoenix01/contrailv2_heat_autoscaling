@@ -89,22 +89,6 @@ parameters:
     type: string
     description: FQDN in format default-domain:admin:name
 
-
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_2:
-    type: string
-    description: ip_prefix for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_2:
-    type: number
-    description: ip_prefix_len for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_3:
-    type: string
-    description: ip_prefix for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_3:
-    type: number
-    description: ip_prefix_len for the ServiceInstance
-  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_address_mode_3:
-    type: string
-    description: address_mode for the ServiceInstance
   network_ipam_refs_data_ipam_subnets_subnet_ip_prefix_1:
     type: string
     description: subnet prefix for mgmt network
@@ -220,8 +204,74 @@ parameters:
     type: string
     description: Number of servie instance. Integer
 
+  ## Ubuntu ##
+  ubuntu_right_name: 
+    type: string
+    description: Ubuntu_Right name
+  ubuntu_left_name: 
+    type: string
+    description: Ubuntu_Left name
+  ubuntu_image:
+    type: string
+    description: ubuntu_image_name as seen in Glance
+  ubuntu_flavor:
+    type: string
+    description: ubuntu_flavor as seen in Openstack
+
+## template to create a ServiceHealthCheck:
+  service_health_check_name:
+    type: string
+    description: name for the ServiceHealthCheck
+  service_health_check_fq_name:
+    type: string
+    description: fq_name for the ServiceHealthCheck
+  service_health_check_properties_enabled:
+    type: boolean
+    description: enabled for the ServiceHealthCheck
+  service_health_check_properties_health_check_type:
+    type: string
+    description: health_check_type for the ServiceHealthCheck
+  service_health_check_properties_monitor_type:
+    type: string
+    description: monitor_type for the ServiceHealthCheck
+  service_health_check_properties_delay:
+    type: number
+    description: delay for the ServiceHealthCheck
+  service_health_check_properties_timeout:
+    type: number
+    description: timeout for the ServiceHealthCheck
+  service_health_check_properties_max_retries:
+    type: number
+    description: max_retries for the ServiceHealthCheck
+  service_health_check_properties_http_method:
+    type: string
+    description: http_method for the ServiceHealthCheck
+  service_health_check_properties_url_path:
+    type: string
+    description: url_path for the ServiceHealthCheck
+  service_health_check_properties_expected_codes:
+    type: string
+    description: expected_codes for the ServiceHealthCheck
+  service_health_check_display_name:
+    type: string
+    description: display_name for the ServiceHealthCheck
+  #service_instance_refs:
+  #  type: string
+  #  description: service_instance_refs for the ServiceHealthCheck
+  service_instance_refs_data_interface_type:
+    type: string
+    description: interface_type for the ServiceHealthCheck
+
+  project:
+    type: string
+    description: project for the ServiceHealthCheck
+
+
+#######################
 ### Start Resource ###
+#######################
 resources:
+
   template_NetworkIpam_1:
     type: OS::ContrailV2::NetworkIpam
     properties:
@@ -284,6 +334,11 @@ resources:
     depends_on: [ template_NetworkIpam_3 ]
     properties:
       name: { get_param: right_network }
+      route_target_list:
+        {
+          route_target_list_route_target: [{ get_param: route_target_list_route_target }],
+        }
+      router_external: { get_param: router_external }
       network_ipam_refs: [{ get_resource: template_NetworkIpam_3 }]
       network_ipam_refs_data:
         [{
@@ -344,46 +399,14 @@ resources:
         {
           service_instance_properties_interface_list:
             [
-              {
-                service_instance_properties_interface_list_virtual_network:
-                 {
-                   list_join: [':', { get_attr: [ template_VirtualNetwork_1, fq_name ] } ]
-                 },
+              { service_instance_properties_interface_list_virtual_network:
+                 { list_join: [':', { get_attr: [ template_VirtualNetwork_1, fq_name ] } ] },
               },
-              {
-              service_instance_properties_interface_list_virtual_network:
-                {
-                   list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ]
-                },
-              service_instance_properties_interface_list_allowed_address_pairs:
-                {
-                  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair:
-                    [{
-                      service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip:
-                        {
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_2 },
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_2 },
-                        }
-                    }],
-                },
+              { service_instance_properties_interface_list_virtual_network:
+                { list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ] },
               },
-              {
-              service_instance_properties_interface_list_virtual_network:
-                {
-                   list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ]
-                },
-              service_instance_properties_interface_list_allowed_address_pairs:
-                {
-                  service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair:
-                    [{
-                      service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip:
-                        {
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_3 },
-                          service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_ip_ip_prefix_len_3 },
-                        },
-                      service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_address_mode: { get_param: service_instance_properties_interface_list_allowed_address_pairs_allowed_address_pair_address_mode_3 },
-                    }],
-                },
+              { service_instance_properties_interface_list_virtual_network:
+                { list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ] },
               }
             ],
         }
@@ -399,20 +422,47 @@ resources:
       min_size: 1
       resource:
         type: service_instance.yaml
+        #type: service_instance_monitored.yaml
         properties:
-          image: { get_param: service_template_properties_image_name }
+          image:  { get_param: service_template_properties_image_name }
           flavor: { get_param: service_template_properties_flavor }
-          virtual_network_1: { get_param: management_network }
+          virtual_network_1:                         { get_param: management_network }
           virtual_network_1_fqdn: { list_join: [':', { get_attr: [ template_VirtualNetwork_1, fq_name ] } ] }
-          virtual_network_2: { get_param: left_network }
+          virtual_network_2:                         { get_param: left_network }
           virtual_network_2_fqdn: { list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ] }
-          virtual_network_3: { get_param: right_network }
+          virtual_network_3:                         { get_param: right_network }
           virtual_network_3_fqdn: { list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ] }
-          service_instance_name: { list_join: [':', { get_attr: [ template_ServiceInstance, fq_name ] } ] }
+          service_instance_name:  { list_join: [':', { get_attr: [ template_ServiceInstance, fq_name ] } ] }
           service_interface_type_1: 'management'
           service_interface_type_2: 'left'
           service_interface_type_3: 'right'
-          port_tuple_name: port_tuple_name
+          port_tuple_name: { get_param: port_tuple_name }
+
+# ServiceHealthCheck 
+  ServiceHealthCheck:
+    type: OS::ContrailV2::ServiceHealthCheck
+    depends_on: [ instance_group ]
+    properties:
+      name: { get_param: service_health_check_name }
+      fq_name: { get_param: service_health_check_fq_name }
+      display_name: { get_param: service_health_check_display_name }
+      service_health_check_properties:
+        {
+          service_health_check_properties_enabled:           { get_param: service_health_check_properties_enabled },
+          service_health_check_properties_health_check_type: { get_param: service_health_check_properties_health_check_type },
+          service_health_check_properties_monitor_type:      { get_param: service_health_check_properties_monitor_type },
+          service_health_check_properties_delay:             { get_param: service_health_check_properties_delay },
+          service_health_check_properties_timeout:           { get_param: service_health_check_properties_timeout },
+          service_health_check_properties_max_retries:       { get_param: service_health_check_properties_max_retries },
+          service_health_check_properties_http_method:       { get_param: service_health_check_properties_http_method },
+          service_health_check_properties_url_path:          { get_param: service_health_check_properties_url_path },
+          service_health_check_properties_expected_codes:    { get_param: service_health_check_properties_expected_codes },
+        }
+      service_instance_refs:                               [{ get_param: service_instance_fqdn }]
+      service_instance_refs_data:
+        [{ service_instance_refs_data_interface_type:       { get_param: service_instance_refs_data_interface_type }, }]
+      project: { get_param: project }
+
 ### Create Service Chaining Policy ###
 ### left -> right, with service = above service_instance ###
   service_chaining_policy:
@@ -421,25 +471,25 @@ resources:
     properties:
       name: { get_param: policy_name }
       network_policy_entries: { network_policy_entries_policy_rule: [{ 
-                network_policy_entries_policy_rule_direction: { get_param: direction },
-                network_policy_entries_policy_rule_protocol: { get_param: protocol },
+                network_policy_entries_policy_rule_direction:                    { get_param: direction },
+                network_policy_entries_policy_rule_protocol:                     { get_param: protocol },
                 network_policy_entries_policy_rule_src_ports: [{
                         network_policy_entries_policy_rule_src_ports_start_port: { get_param: src_port_start },
-                        network_policy_entries_policy_rule_src_ports_end_port: { get_param: src_port_end }
-                                                                }],
+                        network_policy_entries_policy_rule_src_ports_end_port:   { get_param: src_port_end } }],
                 network_policy_entries_policy_rule_dst_ports: [{
                         network_policy_entries_policy_rule_dst_ports_start_port: { get_param: dst_port_start },
-                        network_policy_entries_policy_rule_dst_ports_end_port: { get_param: dst_port_end }
-                                                                }],
+                        network_policy_entries_policy_rule_dst_ports_end_port:   { get_param: dst_port_end } }],
                 network_policy_entries_policy_rule_dst_addresses: [{
                         network_policy_entries_policy_rule_dst_addresses_virtual_network: { get_param: right_network_fqdn }}],
                 network_policy_entries_policy_rule_src_addresses: [{
                         network_policy_entries_policy_rule_src_addresses_virtual_network: { get_param: left_network_fqdn }}],
                 network_policy_entries_policy_rule_action_list: { 
-                        network_policy_entries_policy_rule_action_list_simple_action: { get_param: simple_action },
-                        network_policy_entries_policy_rule_action_list_apply_service: [{ get_param: service_instance_fqdn }]
+                        network_policy_entries_policy_rule_action_list_simple_action:     { get_param: simple_action },
+                        network_policy_entries_policy_rule_action_list_log: true, # { get_param: log_action },
+                        network_policy_entries_policy_rule_action_list_apply_service:    [{ get_param: service_instance_fqdn }]
                         }
                 }]}
+
 ### Create allow_all policy for management network ###
   allow_all_policy:
     type: OS::Contrail::NetworkPolicy
@@ -458,6 +508,7 @@ resources:
                 "src_addresses": [{ "virtual_network": 'any'}] 
               }
         ]  
+
 ### Attach allow_all to management network ### 
   policy_attach_mgnt_network:
     type: OS::Contrail::AttachPolicy
@@ -480,3 +531,55 @@ resources:
     properties:
       network: { get_param: left_network_fqdn }
       policy: { get_param: policy_fqdn }
+
+### Ubuntu ###
+  Ubuntu_Left_Ip:
+    type: OS::ContrailV2::InstanceIp
+    properties:
+      name: Ubuntu_Left_Ip
+      config_root: "config-root"
+      virtual_machine_interface_refs: [{ get_resource: Ubuntu_Left_VM_Interface }]
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ] }]
+
+
+  Ubuntu_Left_VM_Interface:
+    type: OS::ContrailV2::VirtualMachineInterface
+    properties:
+      name: Ubuntu_Left_Interface
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_2, fq_name ] } ] }]
+
+  Ubuntu_Left_VM:
+    type: OS::Nova::Server
+    depends_on: [ Ubuntu_Left_Ip ]
+    properties:
+      name: { get_param: ubuntu_left_name }
+      image: { get_param: ubuntu_image }
+      flavor: { get_param: ubuntu_flavor }
+      networks:
+        - port: { get_resource: Ubuntu_Left_VM_Interface }
+
+  Ubuntu_Right_Ip:
+    type: OS::ContrailV2::InstanceIp
+    properties:
+      name: Ubuntu_Right_Ip
+      config_root: "config-root"
+      virtual_machine_interface_refs: [{ get_resource: Ubuntu_Right_VM_Interface }]
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ] }]
+
+
+  Ubuntu_Right_VM_Interface:
+    type: OS::ContrailV2::VirtualMachineInterface
+    properties:
+      name: Ubuntu_Right_Interface
+      virtual_network_refs: [{ list_join: [':', { get_attr: [ template_VirtualNetwork_3, fq_name ] } ] }]
+
+  Ubuntu_Right_VM:
+    type: OS::Nova::Server
+    depends_on: [ Ubuntu_Right_Ip ]
+    properties:
+      name: { get_param: ubuntu_right_name }
+      image: { get_param: ubuntu_image }
+      flavor: { get_param: ubuntu_flavor }
+      networks:
+        - port: { get_resource: Ubuntu_Right_VM_Interface }
+

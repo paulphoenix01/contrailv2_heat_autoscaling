@@ -126,10 +126,14 @@ resources:
     type: OS::Nova::Server
     depends_on: [ template_InstanceIp_1, template_InstanceIp_2, template_InstanceIp_3 ]
     properties:
-      name:
+      name: 
+      #name: vsrx
+      #name: { get_param: service_instance_name } # ADDED FOR NAME
+      #name: { get_param:  image }
       image: { get_param:  image }
       flavor: { get_param: flavor }
       networks:
         - port: { get_resource: template_VirtualMachineInterface_1 }
         - port: { get_resource: template_VirtualMachineInterface_2 }
         - port: { get_resource: template_VirtualMachineInterface_3 }
+
